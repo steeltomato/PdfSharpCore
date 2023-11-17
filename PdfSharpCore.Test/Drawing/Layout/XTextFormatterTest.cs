@@ -3,6 +3,7 @@ using FluentAssertions;
 using ImageMagick;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Drawing.Layout;
+using PdfSharpCore.Drawing.Layout.enums;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Test.Helpers;
 using Xunit;
@@ -60,6 +61,57 @@ namespace PdfSharpCore.Test.Drawing.Layout
             _textFormatter.DrawString("This is text\nspanning 3 lines\nand overflow shows all three", new XFont("Arial", 12), XBrushes.Black, layout);
 
             var diffResult = DiffPage(_document, "DrawMultiLineStringWithOverflow", 1);
+            
+            diffResult.DiffValue.Should().Be(0);
+        }
+        
+        [Fact]
+        public void DrawMultiLineStringsWithAlignment()
+        {
+            var layout1 = new XRect(12, 12, 200, 80);
+            _renderer.DrawRectangle(XBrushes.LightGray, layout1);
+            _textFormatter.DrawString("This is text\naligned to the top-left", new XFont("Arial", 12), XBrushes.Black, layout1);
+
+            var layout2 = new XRect(12, 100, 200, 80);
+            _renderer.DrawRectangle(XBrushes.LightGray, layout2);
+            _textFormatter.SetAlignment(new TextFormatAlignment { Horizontal = XParagraphAlignment.Center, Vertical = XVerticalAlignment.Middle});
+            _textFormatter.DrawString("This is text\naligned to the middle-center", new XFont("Arial", 12), XBrushes.Black, layout2);
+
+            var layout3 = new XRect(12, 200, 200, 80);
+            _renderer.DrawRectangle(XBrushes.LightGray, layout3);
+            _textFormatter.SetAlignment(new TextFormatAlignment { Horizontal = XParagraphAlignment.Right, Vertical = XVerticalAlignment.Bottom});
+            _textFormatter.DrawString("This is text\naligned to the bottom-right", new XFont("Arial", 12), XBrushes.Black, layout3);
+
+            var diffResult = DiffPage(_document, "DrawMultiLineStringsWithAlignment", 1);
+            
+            diffResult.DiffValue.Should().Be(0);
+        }
+        
+        [Fact]
+        public void DrawMultiLineStringsWithLineHeight()
+        {
+            var font = new XFont("Arial", 12);
+            
+            var layout1 = new XRect(10, 10, 200, 80);
+            _renderer.DrawRectangle(XBrushes.LightGray, layout1);
+            _textFormatter.DrawString("This is text\naligned to the top-left\nand a custom line height", font, XBrushes.Black, layout1, 16);
+
+            var layout2 = new XRect(10, 110, 200, 80);
+            _renderer.DrawRectangle(XBrushes.LightGray, layout2);
+            _textFormatter.SetAlignment(new TextFormatAlignment { Horizontal = XParagraphAlignment.Center, Vertical = XVerticalAlignment.Middle});
+            _textFormatter.DrawString("This is text\naligned to the middle-center\nand a custom line height", font, XBrushes.Black, layout2, 16);
+
+            var layout3 = new XRect(10, 210, 200, 80);
+            _renderer.DrawRectangle(XBrushes.LightGray, layout3);
+            _textFormatter.SetAlignment(new TextFormatAlignment { Horizontal = XParagraphAlignment.Right, Vertical = XVerticalAlignment.Bottom});
+            _textFormatter.DrawString("This is text\naligned to the bottom-right\nand a custom line height", font, XBrushes.Black, layout3, 16);
+
+            var layout4 = new XRect(10, 310, 200, 80);
+            _renderer.DrawRectangle(XBrushes.LightGray, layout4);
+            _textFormatter.SetAlignment(new TextFormatAlignment { Horizontal = XParagraphAlignment.Center, Vertical = XVerticalAlignment.Middle});
+            _textFormatter.DrawString("This is text\nwith a very small\nline height", font, XBrushes.Black, layout4, 6);
+
+            var diffResult = DiffPage(_document, "DrawMultiLineStringsWithLineHeight", 1);
             
             diffResult.DiffValue.Should().Be(0);
         }

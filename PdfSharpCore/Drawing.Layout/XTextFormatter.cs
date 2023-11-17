@@ -180,7 +180,7 @@ namespace PdfSharpCore.Drawing.Layout
             
             if (VerticalAlignment == XVerticalAlignment.Middle)
             {
-                dy += layoutRectangle.Height / 2 - _layoutRectangle.Height / 2;
+                dy += layoutRectangle.Height / 2 - _layoutRectangle.Height / 2 - _cyDescent;
             }
             else if (VerticalAlignment == XVerticalAlignment.Bottom)
             {
